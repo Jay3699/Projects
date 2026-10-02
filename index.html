@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataForge - Free Online JSON, CSV & SQL Formatter & Converter</title>
+  <meta name="description" content="Free, fast, and 100% private developer tool to format, beautify, validate, and convert JSON, CSV, and SQL. Runs entirely in your browser with zero data sent to servers.">
+  <meta name="keywords" content="json formatter, csv to json, sql formatter, json to csv, csv to sql, beautify json, minify json, online developer tools">
+  <meta name="author" content="DataForge">
+  
+  <!-- Google Search Console Verification -->
+  <meta name="google-site-verification" content="google4bc3650b5e6d744c" />
+  
+  <!-- Open Graph / SEO -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="DataForge - Free JSON, CSV & SQL Formatter">
+  <meta property="og:description" content="Instant, secure in-browser data formatting and conversion. No servers, no signups, 100% client-side privacy.">
+  
+  <!-- Structured Data Schema for Google Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "DataForge Formatter & Converter",
+    "operatingSystem": "All",
+    "applicationCategory": "DeveloperApplication",
+    "description": "Format, validate, beautify, and convert JSON, CSV, and SQL files directly inside the browser.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon">{ }</span>
+        <span class="logo-text">DataForge<span class="logo-badge">PRO</span></span>
+      </div>
+      
+      <!-- Tool Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" data-tool="json" id="tab-json" role="tab" aria-selected="true">
+          <span class="tab-dot"></span>JSON Tool
+        </button>
+        <button class="tab-btn" data-tool="csv" id="tab-csv" role="tab" aria-selected="false">
+          <span class="tab-dot"></span>CSV Tool
+        </button>
+        <button class="tab-btn" data-tool="sql" id="tab-sql" role="tab" aria-selected="false">
+          <span class="tab-dot"></span>SQL Formatter
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <span class="privacy-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          100% Client-Side Private
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="main-content">
+    
+    <!-- Action Bar -->
+    <section class="toolbar">
+      <div class="tool-controls" id="tool-controls">
+        <!-- Injected dynamically based on active tab -->
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-secondary" id="btn-sample">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Load Sample
+        </button>
+        <button class="btn btn-secondary" id="btn-clear">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          Clear
+        </button>
+      </div>
+    </section>
+
+    <!-- Notification / Status Banner -->
+    <div id="status-toast" class="toast hidden"></div>
+
+    <!-- Dual Editor Split Pane -->
+    <section class="editor-grid">
+      <!-- Input Column -->
+      <div class="editor-column">
+        <div class="editor-header">
+          <span class="editor-title" id="input-title">Input JSON</span>
+          <div class="editor-stats" id="input-stats">0 lines | 0 chars</div>
+        </div>
+        <div class="editor-body">
+          <textarea id="input-area" placeholder="Paste your raw data here or click 'Load Sample'..." spellcheck="false"></textarea>
+        </div>
+      </div>
+
+      <!-- Output Column -->
+      <div class="editor-column">
+        <div class="editor-header">
+          <span class="editor-title" id="output-title">Formatted Output</span>
+          <div class="editor-stats" id="output-stats">0 lines | 0 chars</div>
+          <div class="output-actions">
+            <button class="icon-btn" id="btn-copy" title="Copy to Clipboard">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span>Copy</span>
+            </button>
+            <button class="icon-btn" id="btn-download" title="Download File">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+        <div class="editor-body">
+          <textarea id="output-area" readonly placeholder="Output will appear here automatically..." spellcheck="false"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- Monetization / Sponsorship Banner Slot (Placeholder for AdSense / Carbon Ads) -->
+    <aside class="ad-container" aria-label="Sponsorship">
+      <div class="ad-placeholder">
+        <span class="ad-label">SPONSORED / ADSENSE SLOT</span>
+        <p class="ad-text">High-speed data manipulation without cloud tracking. Built with 100% web standards.</p>
+        <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener" class="ad-link">☕ Support This Free Tool</a>
+      </div>
+    </aside>
+
+    <!-- SEO / Feature Explainer Section (Great for Google search ranking) -->
+    <article class="info-section">
+      <h1 class="info-heading">Why Use DataForge Developer Tools?</h1>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Zero Server Latency</h3>
+          <p>All parsing, prettifying, and conversion algorithms run natively on your machine using JavaScript Web APIs. Instant results even for large payloads.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>100% Private & Secure</h3>
+          <p>Never worry about leaking customer API keys, production SQL queries, or sensitive CSV rows to third-party cloud servers. Nothing leaves your browser.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Cross-Format Conversion</h3>
+          <p>Effortlessly transform CSV data to JSON objects, JSON arrays to downloadable CSVs, or CSV tables into SQL <code>INSERT INTO</code> statements.</p>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 DataForge. Free, open, and client-side developer utility.</p>
+      <div class="footer-links">
+        <a href="#tab-json">JSON Formatter</a>
+        <a href="#tab-csv">CSV Converter</a>
+        <a href="#tab-sql">SQL Formatter</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
